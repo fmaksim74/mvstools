@@ -1,0 +1,13 @@
+LABEL    OP ARG1,ARG2,ARG3,Arg4    Comment                         @CHL 00000001
+LABEL    OP ARG1,ARG2,ARG3,Arg4    Comment                             @CHL    00000002
+LABEL    OP ARG1,ARG2,ARG3,Arg4    Comment                    @CHL 00000003
+LABEL    OP ARG1,ARG2,ARG3,Arg4    Comment                    @CHL 00000003     
+LABEL    OP ARG1,ARG2,ARG3,Arg4    Comment                         @CHL         
+LABEL    OP ARG1,ARG2,ARG3,Arg4    Comment                         @CHL
+
+         OP ARG1,ARG2,ARG3,Arg4    Comment                         @CHL 00000007
+         OP ARG1,ARG2,ARG3,Arg4    Comment                             @CHL 0000008
+         OP ARG1,ARG2,ARG3,Arg4    Comment                    @CHL 00000009
+         OP ARG1,ARG2,ARG3,Arg4    Comment                    @CHL 00000010     
+         OP ARG1,ARG2,ARG3,Arg4    Comment                         @CHL         
+         OP ARG1,ARG2,ARG3,Arg4    Comment                         @CHL

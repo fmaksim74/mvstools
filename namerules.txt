@@ -1,0 +1,96 @@
+For every product must be created it's own workspace.
+In workspace must be created project with product name.
+This project must have following structure:
+
+  Load modules
+    [userid.][product.]loadlib(lib1,lib2..libN) - saved only on MVS
+
+  JCL for product building
+    [userid.][product.]buildjcl(m1,m2..mN)               <---> ./product/jcl/*.jcl
+
+  JCL procedures for product building
+    [userid.][product.]buildproc(m1,m2..mN)              <---> ./product/jclproc/*.jcl
+  
+All eclipse projects must be joined to working set with name as product name.
+  
+  ./ - current workspace
+For product. !!! Product name is Eclipse project name
+
+For loadlib. Lib name is Eclipse Project name
+  JCL for module building:
+    [userid.][product.]lib.jcl(m1,m2..mN)              <--->  ./lib/jcl/*.jcl
+  JCL procedures for library building:  
+    [userid.][product.]lib.jclproc(m1,m2..mN)          <---> ./lib/jclproc/*.jcl
+  Load module
+    [userid.][product.]lib.loadlib(m1,m2..mN) - saved only on MVS
+  
+  Assembler sources - !!!Must be a standalone project (C project)
+    Asm files
+      [userid.][product.]lib.asm(m1,m2..mN)            <---> ./lib/asm/*.asm
+    Macros
+      [userid.][product.]lib.asm.mac(m1,m2..mN)        <---> ./lib/mac/*.asm
+    JCL for assembly
+      [userid.][product.]lib.asm.jcl(m1,m2..mN)        <---> /lib/jcl/*.jcl
+      [userid.][product.]lib.asm.jclproc(m1,m2..mN)    <---> /lib/jclproc/*.jcl
+    Assembler options
+      [userid.][product.]lib.asm.opt(defopt,m1,m2..mN) <---> /lib/opt/*.opt
+    Assembler listings
+      [userid.][product.]lib.asm.lst(m1,m2..mN)        <---> /lib/lst/*.lst
+    Object files
+      [userid.][product.]lib.asm.obj(m1,m2..mN) - saved only on MVS
+    Assebbler ADATA output  
+      [userid.][product.]lib.asm.adata(m1,m2..mN)      <---> ./lib/adata/*.adata
+    Assembler work files output
+    [userid.][product.]lib.asm.wf(m1,m2..mN)           <---> ./lib/wf/*.awf
+  
+  C sources
+    C files
+      [userid.][product.]lib.c(m1,m2..mN)              <---> ./lib/c/*.c
+    H files
+      [userid.][product.]lib.h(m1,m2..mN)              <---> ./lib/h/*.h
+    JCL for compiling
+      [userid.][product.]lib.c.jcl(m1,m2..mN)          <---> ./lib/jcl/*.jcl
+      [userid.][product.]lib.c.jclproc(m1,m2..mN)      <---> ./lib/jclproc/*.jcl
+    Compiler options
+      [userid.][product.]lib.c.opt(m1,m2..mN)          <---> ./lib/opt/*.opt
+    Object files  
+      [userid.][product.]lib.c.obj(m1,m2..mN) - saved only on MVS
+    Compiler listing  
+      [userid.][product.]lib.c.lst(m1,m2..mN)          <---> /lib/lst/*.lst
+    Compiler messages
+    [userid.][product.]lib.c.prn(m1,m2..mN)            <---> /lib/prn/*.prn
+  
+  C++ sources
+    CPP files
+      [userid.][product.]lib.cpp(m1,m2..mN)            <---> ./lib/c/*.cpp
+    HPP files
+      [userid.][product.]lib.hpp(m1,m2..mN)            <---> ./lib/h/*.h
+    JCL for compiling
+      [userid.][product.]lib.cpp.jcl(m1,m2..mN)        <---> ./lib/jcl/*.jcl
+      [userid.][product.]lib.cpp.jclproc(m1,m2..mN)    <---> ./lib/jclproc/*.jcl
+    Compiler options
+      [userid.][product.]lib.cpp.opt(m1,m2..mN)        <---> ./lib/opt/*.opt
+    Object files
+      [userid.][product.]lib.cpp.obj(m1,m2..mN) - saved only on MVS
+    Compiler listing  
+      [userid.][product.]lib.cpp.lst(m1,m2..mN)        <---> /lib/lst/*.lst
+    Compiler messages
+      [userid.][product.]lib.cpp.prn(m1,m2..mN)        <---> /lib/prn/*.prn
+    
+  Embeded SQL
+    JCL for preprocessing
+      [userid.][product.]lib.emsql.jcl(m1,m2..mN)      <---> ./lib/jcl/*.jcl
+      [userid.][product.]lib.emsql.jclproc(m1,m2..mN)  <---> ./lib/jclproc/*.jcl
+    DBRM lib     
+      [userid.][product.]lib.dbrmlib(m1,m2..mN) - saved only on MVS
+ 
+  SQL scripts
+    SQL files    
+      [userid.][product.]lib.sql(m1,m2..mN)            <---> ./lib/sql/*.sql
+    JCL for executing
+      [userid.][product.]lib.sql.jcl(m1,m2..mN)                                                                                                                                                                                                                                                                                                                                                                 <---> ./lib/jcl/*.jcl
+      [userid.][product.]lib.sql.jclproc(m1,m2..mN)    <---> ./lib/jclproc/*.jcl
+    JCL for binding
+      [userid.][product.]lib.sql.bjcl(m1,m2..mN)       <---> ./lib/jcl/*.jcl
+      [userid.][product.]lib.sql.bjclproc(m1,m2..mN)   <---> ./lib/jclproc/*.jcl
+ 
