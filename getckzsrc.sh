@@ -1,8 +1,8 @@
 #!/bin/bash
 _mvstools="/home/max/dvlp/mvstools.aws/"
 _host="rs22.rocketsoftware.com"
-_user="ts5671"
-_password="f450j2k"
+_user=""
+_password=""
 
 _dsn="PDBURTS.DVLP.CKZ0301"
 _path="/home/max/dvlp/hlasm.aws/ckz/ckz0301/"

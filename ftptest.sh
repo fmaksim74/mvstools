@@ -1,5 +1,5 @@
 #/!bin/bash
-USER="ts5671"
+USER=""
 PASS=""
 
 ftp -n << EOT
