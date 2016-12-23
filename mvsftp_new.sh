@@ -32,51 +32,36 @@ function ExtendString() {
 # $1 - host
 # $2 - userid
 # $3 - password
-# $4 - full path
-# $5 - file mask
-# $6 - full dsn of PDS
-# $7 - reclen
+# $4 - dsn
+# $5 - type
+# $6 - rlen
+# $7 - cp
+# $8 - full path
+# $9 - file mask
 function FTPDSPutFolder() {
-  if [[  ( ! $1 ) || ( ! $2 )  || ( ! $3 ) || !( -d "$4" ) || ( ! $5 )  || ( ! $6 ) ]]; then
-    return -1
-  fi
-  if [[ -z "$7" ]]; then
-    local _mode="ascii"
-  else
-    local _mode="binary"
-  fi
   local _ws_tmp="/tmp/mvs/$4"
   rm -r -f  "$_ws_tmp"
   mkdir -p "$_ws_tmp"
   if [[ !( -d "$_ws_tmp" ) ]]; then
     return -1
   fi
-  for fname in $( find "$4" -maxdepth 1 -type f -name "$5" )
+  for fname in $( find "$8" -maxdepth 1 -type f -name "$9" )
   do
     local fn=${fname##*/}  # get file name with extension
     local fn=${fn%%.*}     # get file name without extension
-    if [[ -z "$7" ]]; then
-      cp "$fname" "$_ws_tmp/${fn^^}"
-    else
-      local _lnum=1
-      cat "$fname" | while IFS= read _line; do
-        while [[ ${#_line} -lt $7 ]]; do _line="$_line "; done
-        while [[ ${#_line} -gt $7 ]]; do
-          _line=$( echo "$_line" | rev | sed 's/  / /' | rev )
-        done
-        echo -n "$_line" | iconv -f UTF-8 -t CP037 >> "$_ws_tmp/${fn^^}" 
-        ((_lnum++));	
-      done
-    fi 
+    cp "$fname" "$_ws_tmp/${fn^^}"
     if [ ! $? -eq 0 ] ; then
       echo "MVSFTP003E: Error copy file from $fname to $_ws_tmp/${fn^^}"
     fi
   done
   ftp -n -i "$1" << End-Of-Session
 user "${2,,}" "$3"
-$_mode
+ascii
+site UCST
+site SB=("$7",UTF-8)
+site MB=("$7",UTF-8)
 lcd "$_ws_tmp"
-cd "'$6'"
+cd "'$4'"
 mput *
 by
 End-Of-Session
@@ -93,24 +78,21 @@ End-Of-Session
 # $8 - full path
 # $9 - file mask
 function FTPDSGetFolder() {
-  if [[ -z "$6" ]]; then
-    local _mode="ascii"
-  else
-    local _mode="binary"
-  fi
-  local _mb="site MB=$_cp"
   local _ws_tmp="/tmp/mvs/$8"
   rm -r -f  "$_ws_tmp"
   mkdir -p "$_ws_tmp"
   if [[ !( -d "$_ws_tmp" ) ]] ; then
     return -1
   fi
-  local _sf="/tmp/mvs/$(date +%Y%m%d%H%M%S%N).ftp"
+  local _dt=$(date +%Y%m%d%H%M%S%N)
+  local _sf="/tmp/mvs/$_dts"
+  local _lf="/tmp/mvs/$_dtl"
   ftp -n -i "$1" << End-Of-Session
 user "${2,,}" "$3"
-$_mode
+ascii
 site UCST
-$_mb
+site SB=("$7",UTF-8)
+site MB=("$7",UTF-8)
 lcd "$_ws_tmp"
 cd "'$4'"
 mget *
@@ -118,15 +100,9 @@ by
 End-Of-Session
   for fname in $( find "$_ws_tmp" -maxdepth 1 -type f); do
     local fn=${fname##*/}
-    if [[ -z "$6" ]]; then
-# Fix ^,[,] symbols in file after 1047 to UTF convert
-      sed "s/\xB5/\x5E/" "$fname" | sed "s/\x8D/\x5B/" | sed "s/\xD9/\x5D/" > "$8/${fn,,}.${6##*.}"
-    else
-# Convert from 037 to UTF-8 and split to lines with specified reclen
-      iconv -f CP037 -t UTF-8 "$fname" | sed -r "s/(.{$7})/\1\n/g" > "$8/${fn,,}.${6##*.}"
-    fi
+    mv -f "$fname" "$8/${fn,,}.${9##*.}"
     if [ ! $? -eq 0 ] ; then
-      echo "MVSFTP004E: Error while coping file from $fname to "$8/${fn,,}.${6##*.}""
+      echo "MVSFTP004E: Error while coping file from $fname to "$8/${fn,,}.${9##*.}""
     fi
   done
   return 0
@@ -238,17 +214,19 @@ if [ -z $_dsn ]; then
   echo "MVSFTP005E: Dataset name expected. See -h or --help."
   exit -1
 fi
-if [ -z $_type]; then
+if [ -z $_type ]; then
   echo "MVSFTP005I: Dataset type not specified. Assume L (library)."
   _type="L"
 fi
-if [ "$_type" -eq "S" ]; then
+
+if [ "$_type" = "S" ]; then
+echo "Type=$_type" 
   if [ -n $(echo "$_mask" | grep "[*?]") ]; then
     echo "MVSFTP004E: Wide file mask with non partitioned dataset. Cannot write more than one file to non partitioned dataset."
     exit -1
   fi
 fi
-if [ -z $_cp]; then
+if [ -z $_cp ]; then
   echo "MVSFTP005I: Dataset charset mot specified. Use 037 as default."
   _cp="037"
 fi
