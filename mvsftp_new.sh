@@ -60,6 +60,7 @@ ascii
 site UCST
 site SB=("$7",UTF-8)
 site MB=("$7",UTF-8)
+quote site ispfstats
 lcd "$_ws_tmp"
 cd "'$4'"
 mput *
@@ -100,7 +101,8 @@ by
 End-Of-Session
   for fname in $( find "$_ws_tmp" -maxdepth 1 -type f); do
     local fn=${fname##*/}
-    mv -f "$fname" "$8/${fn,,}.${9##*.}"
+    iconv -f utf-8 -t utf-8 -c "$fname" | sed 's/ *[0-9]\{8\}$//g' > "$8/${fn,,}.${9##*.}"
+#    mv -f "$fname" "$8/${fn,,}.${9##*.}"
     if [ ! $? -eq 0 ] ; then
       echo "MVSFTP004E: Error while coping file from $fname to "$8/${fn,,}.${9##*.}""
     fi
