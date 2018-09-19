@@ -1,6 +1,7 @@
 #!/bin/bash
 echo "Hi!"
-fn="/dir/file"
+fn="/dir/file.ext"
+echo "Process $fn"
 echo "Path=${fn%/*}"
 echo "Name=${fn##*/}"
 echo "Ext=${fn##*.}"
